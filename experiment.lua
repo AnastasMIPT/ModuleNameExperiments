@@ -71,10 +71,6 @@ print('mean = ', mean_time_tur,         'max = ', max_time_tur,         'min = '
 print("\nIV. Time with Igor Munkin's modification of Alexander Turenko's approach, without module code changes")
 print('mean = ', mean_time_req,         'max = ', max_time_req,         'min = ', min_time_req)
 
-
-print("\nwithout changing code    ",   mean_time_my_mod_name / mean_time_tur,   " times slower than Alexandr Turenko's approach")
-print("without changing code      ",   mean_time_my_mod_name / mean_time_vanil, " times slower than default approach")
-
 print("\nRPS\n")
 print("Default approach                                       ", iterations_num / mean_time_vanil)
 print("Simple approach without changing code with module name ", iterations_num / mean_time_my_mod_name)
