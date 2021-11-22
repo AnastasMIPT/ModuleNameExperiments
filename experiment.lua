@@ -12,7 +12,6 @@ old_require = require
 require = function(modname)
     if modname == 'log_require' then
         mod_name = module_name_by_func(2)
-        print(mod_name)
         local log = old_require(modname)
         log.new(mod_name)
         return log
@@ -32,45 +31,56 @@ local log = require("log")
 local clock = require('clock')
 
 local iterations_num = 100000
-local expirements_num = 10
+local expirements_num = 20
 local first_iterations = 1000000
 
 for i = 1, first_iterations do
     log.info("kakaya-to informatciya")
 end
 
-local mean_time_vanil, max_time_vanil, min_time_vanil      = anasmod_vanil_log.bench_make_logs(expirements_num, iterations_num)
-local mean_time_my_mod_name, max_time_my_mod_name, min_time_my_mod_name =    anasmod_my_log.bench_make_logs_mod_name(expirements_num, iterations_num)
-local mean_time_my_file, max_time_my_file, min_time_my_file         =    anasmod_my_log.bench_make_logs_file(expirements_num, iterations_num)
-local mean_time_tur,   max_time_tur,   min_time_tur        =   anasmod_tur_log.bench_make_logs(expirements_num, iterations_num)
-local mean_time_req,   max_time_req,   min_time_req        =   anasmod_req_log.bench_make_logs(expirements_num, iterations_num)
+local mean_time_my_mod_name, max_time_my_mod_name, min_time_my_mod_name =    anasmod_my_log.bench_make_logs_mod_name(
+                                                                               expirements_num,
+                                                                               iterations_num)
+local mean_time_my_file, max_time_my_file, min_time_my_file         =    anasmod_my_log.bench_make_logs_file(
+                                                                               expirements_num,
+                                                                               iterations_num)
+local mean_time_vanil, max_time_vanil, min_time_vanil      = anasmod_vanil_log.bench_make_logs(
+                                                                               expirements_num,
+                                                                               iterations_num)
+
+local mean_time_tur,   max_time_tur,   min_time_tur        =   anasmod_tur_log.bench_make_logs(
+                                                                               expirements_num,
+                                                                               iterations_num)
+local mean_time_req,   max_time_req,   min_time_req        =   anasmod_req_log.bench_make_logs(
+                                                                               expirements_num,
+                                                                               iterations_num)
 
 
-print('\ndefault log time')
-print('mean = ', mean_time_vanil, 'max = ', max_time_vanil, 'min = ', min_time_vanil)
+print('\nI. Default log time')
+print('mean = ', mean_time_vanil,       'max = ', max_time_vanil,       'min = ', min_time_vanil)
 
-print('\ntime without changing code with module name')
+print('\nII. Time without changing code with simple approach module name')
 print('mean = ', mean_time_my_mod_name, 'max = ', max_time_my_mod_name, 'min = ', min_time_my_mod_name)
 
-print('\ntime without changing code with just file')
-print('mean = ', mean_time_my_file, 'max = ', max_time_my_file, 'min = ', min_time_my_file)
+print('\nII. Time without changing code with simple approach just file')
+print('mean = ', mean_time_my_file,     'max = ', max_time_my_file,     'min = ', min_time_my_file)
 
-print("\ntime with Alexandr Turenko's approach")
-print('mean = ', mean_time_tur, 'max = ', max_time_tur, 'min = ', min_time_tur)
+print("\nIII. Time with Alexandr Turenko's approach with module code changes")
+print('mean = ', mean_time_tur,         'max = ', max_time_tur,         'min = ', min_time_tur)
 
-print("\ntime with Igor Munkin's approach")
-print('mean = ', mean_time_req, 'max = ', max_time_req, 'min = ', min_time_req)
+print("\nIV. Time with Igor Munkin's modification of Alexander Turenko's approach, without module code changes")
+print('mean = ', mean_time_req,         'max = ', max_time_req,         'min = ', min_time_req)
 
 
-print("\nwithout changing code    ", (mean_time_my_mod_name / mean_time_tur - 1)   * 100, " %    slower than Alexandr Turenko's approach")
-print("without changing code    ", (mean_time_my_mod_name / mean_time_vanil - 1) * 100, " %    slower than default approach")
+print("\nwithout changing code    ",   mean_time_my_mod_name / mean_time_tur   - 1, " times slower than Alexandr Turenko's approach")
+print("without changing code      ",   mean_time_my_mod_name / mean_time_vanil - 1, " times slower than default approach")
 
 print("\nRPS\n")
-print("default log                            ", iterations_num / mean_time_vanil)
-print("without changing code with module name ", iterations_num / mean_time_my_mod_name)
-print("without changing code with just file   ", iterations_num / mean_time_my_file)
-print("Alexandr Turenko's approach            ", iterations_num / mean_time_tur)
-print("Igor Munkin's approach            ", iterations_num / mean_time_req)
+print("Default approach                                       ", iterations_num / mean_time_vanil)
+print("Simple approach without changing code with module name ", iterations_num / mean_time_my_mod_name)
+print("without changing code with just file                   ", iterations_num / mean_time_my_file)
+print("Alexandr Turenko's approach                            ", iterations_num / mean_time_tur)
+print("Igor Munkin's modification                             ", iterations_num / mean_time_req)
 
 
 box.schema.user.grant('guest', 'read,write,execute', 'universe', nil, {if_not_exists=true})
