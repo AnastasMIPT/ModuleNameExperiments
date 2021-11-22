@@ -12,40 +12,36 @@ chmod +x ./experiment.lua
 ```
 ./experiment.lua
 ```
+## Related issues
+[Per-module logging](https://github.com/tarantool/tarantool/issues/3211)
 
 ## Results
-I. Default log time
+The experiment was conducted on a dev4 machine.
+Here are five ways I've compared them to each other:
 
-mean =  1.22123270655556 max =  2.223104463 min =  3.218848195
+I. Default log time
 
 II. Time without changing code with simple approach module name
 
-mean =  4.3435144995 max =  5.346481201 min =  6.34124783
+III. Time without changing code with simple approach just file
 
-II. Time without changing code with simple approach just file
+IV. Time with Alexandr Turenko's approach with module code changes
 
-mean =  7.30735176925 max =  8.308728556 min =  9.306057135
+V. Time with Igor Munkin's modification of Alexander Turenko's approach, without module code changes
 
-III. Time with Alexandr Turenko's approach with module code changes
 
-mean =  10.22134047622222 max =  11.22267143000001 min =  12.219768248
+|                                  | mean    | max      | min    |
+| :---                             | :-----: |  :----:  | ---:   |
+| I.   Default approach            | 0.2119  | 0.2308   | 0.2020 |
+| II.  Simple approach module name | 0.3501  | 0.3536   | 0.3467 |
+| III. Simple approach just file   | 0.3109  | 0.3119   | 0.3094 |
+| IV.  Alexandr Turenko's approach | 0.2037  | 0.2056   | 0.2023 |
+| V.   Igor Munkin's modification  | 0.2105  | 0.2261   | 0.2031 |
 
-IV. Time with Igor Munkin's modification of Alexander Turenko's approach, without module code changes
-
-mean =  13.22147409583333 max =  14.22285399999999 min =  15.218935484
-
-without changing code     1.655197325569644  times slower than Alexandr Turenko's approach
-without changing code       1.755272927248547  times slower than default approach
-
-RPS
-
-Default approach                                        452012.73155734
-
-Simple approach without changing code with module name  291108.52713802
-
-without changing code with just file                    325360.09226178
-
-Alexandr Turenko's approach                             451792.64862339
-
-Igor Munkin's modification                              451520.073369
-
+|                                  | Need to modify module's code | RPS        |
+| :---                             | :---                         |    :----:   |
+| I.   Default approach            |  No                          | 471916.46   | 
+| II.  Simple approach module name |  No                          | 285553.80   |
+| III. Simple approach just file   |  No                          | 321612.82   |
+| IV.  Alexandr Turenko's approach |  Yes                         | 490686.84   |
+| V.   Igor Munkin's modification  |  No                          | 475016.25   |
