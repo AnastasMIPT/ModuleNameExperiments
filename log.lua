@@ -1,5 +1,7 @@
 -- log.lua
 --
+local require = old_require
+
 local ffi = require('ffi')
 ffi.cdef[[
     typedef void (*sayfunc_t)(int level, const char *filename, int line,

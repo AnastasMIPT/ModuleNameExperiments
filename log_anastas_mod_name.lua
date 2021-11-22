@@ -222,7 +222,7 @@ local function verify_option(k, v, ...)
 end
 
 local function get_module_name_by_func(func_level)
-    local debug = require('debug')
+    local debug = debug or require('debug')
     local func_that_we_need = debug.getinfo(func_level + 1).func
     local name_of_need_module
     for mod_name, val in pairs(getfenv(func_level + 1)) do
@@ -241,7 +241,7 @@ local function get_module_name_by_func(func_level)
 end
 
 local function module_name_by_func(func_level)
-    local debug = require('debug')
+    local debug = debug or require('debug')
     local name_of_need_module
     local src_name = debug.getinfo(func_level + 1).short_src
     name_of_need_module = src_name:match'.*/([^.]+)'    --https://coderoad.ru/52331309/Как-получить-имя-файла-без-расширения-с-помощью-регулярных-выражений
