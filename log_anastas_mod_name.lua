@@ -221,30 +221,27 @@ local function verify_option(k, v, ...)
     return true
 end
 
-local function get_module_name_by_func(func_level)
-    local debug = debug or require('debug')
-    local func_that_we_need = debug.getinfo(func_level + 1).func
-    local name_of_need_module
-    for mod_name, val in pairs(getfenv(func_level + 1)) do
-        if type(val) == 'table' then
-            for i, v in pairs(val) do
-                if type(v) == 'function' then
-                    if v == func_that_we_need then
-                        name_of_need_module = mod_name
-                        break
-                    end
-                end
-            end
-        end
+local function mod_name_form_filename(filename)
+    local pathes = package.path
+    local result = filename
+    local cur_dir = os.getenv("PWD") .. '/'
+    result = result:gsub(cur_dir, '')
+
+    for path in  pathes:gmatch'/([A-Za-z\\/\\.0-9]+)\\?' do
+        result = result:gsub('/' .. path, '');
     end
-    return name_of_need_module
+
+    result = result:gsub('/init.lua', ''); -- module's name shouldn't contain '/init.lua'
+    result = result:gsub('%.lua', '');     -- module's name shouldn't contain '.lua'
+    result = result:gsub('/', '.');
+    return result
 end
 
 local function module_name_by_func(func_level)
     local debug = debug or require('debug')
     local name_of_need_module
     local src_name = debug.getinfo(func_level + 1).short_src
-    name_of_need_module = src_name:match'.*/([^.]+)'    --https://coderoad.ru/52331309/Как-получить-имя-файла-без-расширения-с-помощью-регулярных-выражений
+    name_of_need_module = mod_name_form_filename(src_name)
     return name_of_need_module
 end
 -- Main routine which pass data to C logging code.

@@ -1,10 +1,26 @@
 #!/usr/bin/env ../src/tarantool
 
+local function mod_name_form_filename(filename)
+    local pathes = package.path
+    local result = filename
+    local cur_dir = os.getenv("PWD") .. '/'
+    result = result:gsub(cur_dir, '')
+
+    for path in  pathes:gmatch'/([A-Za-z\\/\\.0-9]+)\\?' do
+        result = result:gsub('/' .. path, '');
+    end
+
+    result = result:gsub('/init.lua', ''); -- module's name shouldn't contain '/init.lua'
+    result = result:gsub('%.lua', '');     -- module's name shouldn't contain '.lua'
+    result = result:gsub('/', '.');
+    return result
+end
+
 local function module_name_by_func(func_level)
     local debug = debug or require('debug')
     local name_of_need_module
     local src_name = debug.getinfo(func_level + 1).short_src
-    name_of_need_module = src_name:match'.*/([^.]+)'
+    name_of_need_module = mod_name_form_filename(src_name)
     return name_of_need_module
 end
 
